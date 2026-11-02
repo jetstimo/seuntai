@@ -16,7 +16,7 @@ jobs:
       - name: Security scan (Bandit)
         run: |
           pip install bandit
-          bandit -q -r seuntai -x seuntai/tests -ll
+          bandit -q -r seuntai -x seuntai/tests
       - name: Brand-neutral texts
         env:
           BRAND_DENYLIST: ${{ secrets.BRAND_DENYLIST }}
