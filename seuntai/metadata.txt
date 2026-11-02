@@ -1,0 +1,20 @@
+[general]
+name=Seuntai - Strand Consolidator
+qgisMinimumVersion=3.22
+qgisMaximumVersion=4.99
+version=2.0.0
+author=Joseph Edward Timothy Siahaan, Sidah Fahira
+email=edwardtimoo@gmail.com
+description=Stacked or parallel lines in one corridor become a single line: the line with the oldest creation date is kept, with its original attributes, for the product/LOB you choose.
+about=Seuntai cleans line networks (cables, routes) that were digitised more than once, so several lines run on top of or beside each other. Pick a line layer, tick the product/LOB values found in its attributes and press Run: in every corridor only the line with the oldest creation date is kept, unchanged and with all its attributes, and the result is saved as a Shapefile with an offline HTML report that explains every decision. Duplicates are found by distance, not identical geometry; cables drawn on both sides of the same road become one line by matching them to OpenStreetMap roads. A folder tool processes every line dataset in a folder; a check tool reports stacked corridors without changing the data. No extra Python packages needed; internet is used only to download the road data around your lines (a few MB per city, cached). Reports are written in Indonesian. Licence GPL v2 or later.
+category=Vector
+icon=icon.png
+tags=line merge,dissolve,duplicate,overlap,parallel lines,centerline,topology,cleaning,cable,fiber,fibre optic,network,processing,shapefile
+homepage=https://github.com/jetstimo/seuntai
+tracker=https://github.com/jetstimo/seuntai/issues
+repository=https://github.com/jetstimo/seuntai
+hasProcessingProvider=yes
+experimental=True
+deprecated=False
+server=False
+changelog=2.0.0 English menus and a one-click Consolidate Lines window (layer, product/LOB, Run); 15 m default corridor (road right-of-way) with 5 / 11 / 15 / 25 m choices; road matching with OpenStreetMap so cables on both sides of one road become one line (light road tiles, cached, same result from every road source); layers without a creation date are still processed (longest line kept, results marked); new interactive report. Full history: https://github.com/jetstimo/seuntai/blob/main/CHANGELOG.md

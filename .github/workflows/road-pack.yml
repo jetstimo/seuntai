@@ -1,0 +1,45 @@
+# Bangun ulang paket petak jalan Indonesia (OpenStreetMap, ODbL) tiap bulan dan terbitkan di GitHub Pages:
+#   https://<akun>.github.io/seuntai/pack/index.json  (+ <tx>_<ty>.json.gz)
+# Aktifkan sekali: Settings > Pages > Source: GitHub Actions. Jalankan pertama kali: Actions > road-pack > Run workflow.
+name: road-pack
+on:
+  schedule: [{cron: "17 3 2 * *"}]
+  workflow_dispatch: {}
+permissions: {contents: read, pages: write, id-token: write}
+concurrency: {group: pages, cancel-in-progress: false}
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y python3-gdal
+      - name: Unduh ekstrak Geofabrik per pulau
+        run: |
+          mkdir -p work
+          for r in java sumatra kalimantan sulawesi nusa-tenggara maluku papua; do
+            curl -fsSL --retry 5 --retry-delay 30 -o work/$r.osm.pbf https://download.geofabrik.de/asia/indonesia/$r-latest.osm.pbf
+          done
+          ls -la work
+      - name: Bangun paket petak
+        run: python3 tools/build_road_pack.py site/pack --drop-pbf work/java.osm.pbf work/sumatra.osm.pbf work/kalimantan.osm.pbf work/sulawesi.osm.pbf work/nusa-tenggara.osm.pbf work/maluku.osm.pbf work/papua.osm.pbf
+      - name: Halaman atribusi
+        run: |
+          cat > site/index.html <<'HTML'
+          <!doctype html><meta charset="utf-8"><title>Seuntai road pack</title>
+          <p>OpenStreetMap road centrelines for Indonesia in 0.1&deg; tiles, used by the Seuntai QGIS plugin.</p>
+          <p>Data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>,
+          available under the <a href="https://opendatacommons.org/licenses/odbl/">Open Database License (ODbL) 1.0</a>.
+          Source: Geofabrik extracts. Index: <a href="pack/index.json">pack/index.json</a>.</p>
+          HTML
+          du -sh site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: {path: site}
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment: {name: github-pages, url: "${{ steps.d.outputs.page_url }}"}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests (pure Python, no QGIS needed)
+        run: python seuntai/tests/test_core.py
+      - name: Security scan (Bandit)
+        run: |
+          pip install bandit
+          bandit -q -r seuntai -x seuntai/tests -ll
+      - name: Brand-neutral texts
+        env:
+          BRAND_DENYLIST: ${{ secrets.BRAND_DENYLIST }}
+        run: python scripts/check_neutral.py seuntai
+      - name: Build and validate plugin ZIP
+        run: python scripts/release.py seuntai dist --strict
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seuntai-zip
+          path: dist/*.zip
