@@ -3,6 +3,7 @@
 Warna status memakai palet Okabe-Ito (Color Universal Design) agar tetap terbedakan oleh pengguna buta warna;
 status juga dibedakan dengan pola garis (utuh/putus-putus/titik), bukan warna saja.
 Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE)."""
+from . import _log
 try:
     from qgis.core import (QgsCategorizedSymbolRenderer, QgsLineSymbol, QgsMarkerSymbol,
                            QgsProcessingLayerPostProcessorInterface, QgsRendererCategory, QgsSingleSymbolRenderer)
@@ -85,15 +86,15 @@ def _hide_later(layer_id, delay=500):
                 node = QgsProject.instance().layerTreeRoot().findLayer(layer_id)
                 if node is not None:
                     node.setItemVisibilityChecked(False)
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
             finally:
                 if go in _PENDING:
                     _PENDING.remove(go)
         _PENDING.append(go)
         QTimer.singleShot(delay, go)
-    except Exception:
-        pass
+    except Exception as _e:
+        _log.note(_e)
 
 
 def _to_top_later(layer_id, delay=300):
@@ -110,15 +111,15 @@ def _to_top_later(layer_id, delay=300):
                     parent = node.parent()
                     parent.insertChildNode(0, node.clone())
                     parent.removeChildNode(node)
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
             finally:
                 if go in _PENDING:
                     _PENDING.remove(go)
         _PENDING.append(go)
         QTimer.singleShot(delay, go)
-    except Exception:
-        pass
+    except Exception as _e:
+        _log.note(_e)
 
 
 class PostProcessor(QgsProcessingLayerPostProcessorInterface):
@@ -145,5 +146,5 @@ class PostProcessor(QgsProcessingLayerPostProcessorInterface):
         except Exception as e:  # gaya hanya kosmetik
             try:
                 feedback.pushInfo("Layer style not applied: %r" % e)
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)

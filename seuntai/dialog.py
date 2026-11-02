@@ -21,6 +21,7 @@ from qgis.PyQt.QtWidgets import (QCheckBox, QDialog, QFileDialog, QHBoxLayout, Q
 from . import compat as K
 from . import deteksi as D
 from . import styles
+from . import _log
 
 ALG = "seuntai:konsolidasi_strand"
 # lebar koridor (m) -> separuhnya = toleransi algoritma; acuan RUMIJA minimum PP 34/2006 Pasal 40
@@ -51,7 +52,8 @@ def _line_layers():
             if isinstance(lyr, QgsVectorLayer) and lyr.isValid() and \
                     QgsWkbTypes.geometryType(lyr.wkbType()) == K.GEOM_LINE:
                 out.append(lyr)
-        except Exception:
+        except Exception as _e:
+            _log.note(_e)
             continue
     return sorted(out, key=lambda x: x.name().lower())
 
@@ -239,8 +241,8 @@ class ConsolidateDialog(QDialog):
         req.setLimit(300)
         try:
             req.setFlags(K.REQ_NOGEOM)
-        except Exception:
-            pass
+        except Exception as _e:
+            _log.note(_e)
         for ft in lyr.getFeatures(req):
             for nm in names:
                 smp[nm].append(ft[nm])
@@ -253,8 +255,8 @@ class ConsolidateDialog(QDialog):
             try:
                 req2.setFlags(K.REQ_NOGEOM)
                 req2.setSubsetOfAttributes([idx])
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
             for ft in lyr.getFeatures(req2):
                 v = ft[self.f_prod]
                 v = "" if v is None or str(v) == "NULL" else str(v).strip()
@@ -378,8 +380,8 @@ class ConsolidateDialog(QDialog):
             if lyr.isValid():
                 try:
                     lyr.setRenderer(QgsSingleSymbolRenderer(styles.kabel_symbol()))
-                except Exception:
-                    pass
+                except Exception as _e:
+                    _log.note(_e)
                 QgsProject.instance().addMapLayer(lyr)
         txt = ("<b>Done.</b> %s lines in -> %s single lines (one per corridor), %s duplicates removed.<br>"
                "Shapefile: %s" % (format(int(results.get("N_INPUT") or 0), ","),
@@ -396,8 +398,8 @@ class ConsolidateDialog(QDialog):
         self.status.setText(txt)
         try:
             self.iface.messageBar().pushSuccess("Seuntai", "Consolidated: %s" % (os.path.basename(shp) or "done"))
-        except Exception:
-            pass
+        except Exception as _e:
+            _log.note(_e)
         rpt = results.get("REPORT")
         if self.chk_open.isChecked() and rpt and os.path.exists(rpt):
             QDesktopServices.openUrl(QUrl.fromLocalFile(rpt))

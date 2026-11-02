@@ -21,6 +21,10 @@ import os
 import time
 import urllib.parse
 import urllib.request
+try:
+    from . import _log
+except ImportError:  # dipakai di luar paket (uji/alat)
+    import _log
 
 try:
     from . import core as C
@@ -92,8 +96,7 @@ def _get(url, data=None, timeout=180):
             nr.setTransferTimeout(int(timeout * 1000))
         br = QgsBlockingNetworkRequest()
         if data is not None:
-            nr.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader if hasattr(QNetworkRequest, "KnownHeaders")
-                         else QNetworkRequest.ContentTypeHeader, "application/x-www-form-urlencoded")
+            nr.setHeader(QNetworkRequest.KnownHeaders.ContentTypeHeader, "application/x-www-form-urlencoded")
             err = br.post(nr, QByteArray(data))
         else:
             err = br.get(nr)
@@ -142,8 +145,8 @@ def _opener():
                 auth = ("%s:%s@" % (urllib.parse.quote(user), urllib.parse.quote(pwd))) if user else ""
                 px = "http://%s%s%s" % (auth, host, (":%s" % port) if port else "")
                 handlers.append(urllib.request.ProxyHandler({"http": px, "https": px}))
-    except Exception:
-        pass
+    except Exception as _e:
+        _log.note(_e)
     return urllib.request.build_opener(*handlers)
 
 
@@ -255,8 +258,8 @@ def ensure_region(rg, feedback=None):
         if free < 3.0e9 and not os.path.exists(gpkg):
             raise RoadError("not enough free disk space for the '%s' road data (%.1f GB free, about 3 GB needed). "
                             "Free some space or set another cache folder" % (rg, free / 1e9))
-    except (OSError, ImportError):
-        pass
+    except (OSError, ImportError) as _e:
+        _log.note(_e)
     try:
         if feedback is not None:
             feedback.pushInfo("Downloading OpenStreetMap roads for '%s' (one time, then cached)..." % rg)
@@ -288,8 +291,8 @@ def ensure_region(rg, feedback=None):
     os.replace(tmp, gpkg)
     try:
         os.remove(pbf)
-    except OSError:
-        pass
+    except OSError as _e:
+        _log.note(_e)
     return gpkg
 
 

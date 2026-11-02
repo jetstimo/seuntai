@@ -22,6 +22,10 @@ import datetime as _dt
 import math
 import re
 from array import array
+try:
+    from . import _log
+except ImportError:  # dipakai di luar paket (uji/alat)
+    import _log
 
 # ------------------------------------------------------------------------------------------------ tanggal
 _BULAN = {
@@ -79,8 +83,8 @@ def _parse_date_raw(v, dayfirst=True):
     try:
         if hasattr(v, "isNull") and v.isNull():
             return None
-    except Exception:
-        pass
+    except Exception as _e:
+        _log.note(_e)
     for meth in ("toPyDateTime", "toPyDate"):
         f = getattr(v, meth, None)
         if callable(f):
@@ -138,8 +142,8 @@ def _parse_date_raw(v, dayfirst=True):
     try:
         if re.match(r"^-?\d+(\.\d+)?$", s):
             return _parse_date_raw(float(s), dayfirst)
-    except ValueError:
-        pass
+    except ValueError as _e:
+        _log.note(_e)
     return None
 
 
@@ -326,10 +330,9 @@ class RoadMatcher:
     def __init__(self, roads, cell=25.0, fp_cell=10.0, near_cells=None):
         """near_cells: himpunan sel (ukuran cell) di sekitar garis kabel; ruas jalan di luar sel ini diabaikan."""
         self.cell, self.fp_cell = cell, fp_cell
-        A = lambda t: array(t)
-        self.ax, self.ay, self.bx, self.by = A("d"), A("d"), A("d"), A("d")
-        self.tol, self.ang = A("f"), A("f")
-        self.lab, self.ow, self.walk = A("i"), A("b"), A("b")
+        self.ax, self.ay, self.bx, self.by = array("d"), array("d"), array("d"), array("d")
+        self.tol, self.ang = array("f"), array("f")
+        self.lab, self.ow, self.walk = array("i"), array("b"), array("b")
         self.labels, lab_id = [], {}
         self.g = {}
         ends = {}           # titik ujung ruas (dibulatkan 0,5 m) -> [(label_id, sudut_keluar, tol)]
@@ -423,8 +426,8 @@ class RoadMatcher:
                 self.n_dual += 1
         self.n_labels = len({self.lab[i] for i in range(n) if not self.dead[i]})
         # jejak garis terpilih (array ringkas)
-        self.fqx, self.fqy, self.fpx, self.fpy = A("d"), A("d"), A("d"), A("d")
-        self.flab, self.fown, self.fli = A("i"), A("q"), A("i")
+        self.fqx, self.fqy, self.fpx, self.fpy = array("d"), array("d"), array("d"), array("d")
+        self.flab, self.fown, self.fli = array("i"), array("q"), array("i")
         self.fp = {}
         self.coarse = set()         # sel 50 m yang berisi jejak (penyaring cepat)
         self._cache = {}

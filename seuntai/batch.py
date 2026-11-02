@@ -25,6 +25,7 @@ from . import compat as K
 from . import deteksi as D
 from . import ringkasan as RS
 from .alg_strand import __version__, __author__
+from . import _log
 
 HERE = os.path.dirname(__file__)
 LINGKUP = ["The chosen folder (including subfolders)",
@@ -93,8 +94,8 @@ def inspect(uri, label, wanted, skip_nodate=False):
         req.setLimit(300)
         try:
             req.setFlags(K.REQ_NOGEOM)
-        except Exception:
-            pass
+        except Exception as _e:
+            _log.note(_e)
         for ft in lyr.getFeatures(req):
             for nm in names:
                 smp[nm].append(ft[nm])
@@ -117,8 +118,8 @@ def inspect(uri, label, wanted, skip_nodate=False):
             try:
                 req2.setFlags(K.REQ_NOGEOM)
                 req2.setSubsetOfAttributes([idx])
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
             for ft in lyr.getFeatures(req2):
                 v = ft[f_prod]
                 v = "" if v is None or str(v) == "NULL" else str(v).strip()
@@ -303,8 +304,8 @@ class OtomatisSeuntai(QgsProcessingAlgorithm):
                 if scope == 0:
                     try:
                         info["rel"] = os.path.relpath(info["path"], folder)
-                    except ValueError:
-                        pass
+                    except ValueError as _e:
+                        _log.note(_e)
                 rows.append(info)
         plan = [r for r in rows if r["status"] == RS.PLAN]
         feedback.pushInfo("%d line datasets: %d ready, %d skipped." % (len(rows), len(plan), len(rows) - len(plan)))
@@ -366,8 +367,8 @@ class OtomatisSeuntai(QgsProcessingAlgorithm):
                 # lepaskan layer sementara hasil data ini agar memori tidak menumpuk pada ratusan data
                 try:
                     context.temporaryLayerStore().removeAllMapLayers()
-                except Exception:
-                    pass
+                except Exception as _e:
+                    _log.note(_e)
                 gc.collect()
             for r in plan:
                 if r["status"] == RS.PLAN:
@@ -385,8 +386,8 @@ class OtomatisSeuntai(QgsProcessingAlgorithm):
                         det.setPostProcessor(pp)
                         context.addLayerToLoadOnCompletion(r["kabel_shp"], det)
                         loaded += 1
-                    except Exception:
-                        pass
+                    except Exception as _e:
+                        _log.note(_e)
 
         # ---- 4. ringkasan
         meta = {"waktu": _dt.datetime.now().strftime("%Y-%m-%d %H:%M"), "lingkup": where_id,
@@ -415,8 +416,8 @@ class OtomatisSeuntai(QgsProcessingAlgorithm):
                 from qgis.PyQt.QtCore import QUrl
                 from qgis.PyQt.QtGui import QDesktopServices
                 QDesktopServices.openUrl(QUrl.fromLocalFile(p))
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
         return {}
 
 
@@ -430,6 +431,7 @@ def _folder_behavior():
             for part in path.split("."):
                 obj = getattr(obj, part)
             return obj
-        except AttributeError:
+        except AttributeError as _e:
+            _log.note(_e)
             continue
     return 1

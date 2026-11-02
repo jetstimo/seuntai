@@ -33,9 +33,10 @@ from . import compat as K
 from . import report
 from . import styles
 from . import deteksi as D
+from . import _log
 
 __product__ = "Seuntai"
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__ = "Joseph Edward Timothy Siahaan, Sidah Fahira"
 HERE = os.path.dirname(__file__)
 
@@ -115,8 +116,8 @@ def _xy_parts(g):
     try:
         if QgsWkbTypes.isCurvedType(g.wkbType()):
             g.convertToStraightSegment()
-    except Exception:
-        pass
+    except Exception as _e:
+        _log.note(_e)
     if QgsWkbTypes.geometryType(g.wkbType()) != K.GEOM_LINE:
         return []
     try:
@@ -441,8 +442,8 @@ class _Base(QgsProcessingAlgorithm):
         try:
             lyr = self.parameterAsVectorLayer(parameters, self.INPUT, context)
             lyr_name = lyr.name() if lyr else ""
-        except Exception:
-            pass
+        except Exception as _e:
+            _log.note(_e)
         lyr_name = lyr_name or src.sourceName()
         fields = src.fields()
 
@@ -477,8 +478,8 @@ class _Base(QgsProcessingAlgorithm):
                 for ft in src.getFeatures(req0):
                     for f in fields:
                         smp[f.name()].append(ft[f.name()])
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
             hit, why_d = D.pick_date_field([(f.name(), f.typeName()) for f in fields], smp)
             if hit:
                 feedback.pushInfo("Date column '%s' not found; using column '%s' automatically (%s)." % (f_tgl_in, hit,
@@ -1115,8 +1116,8 @@ class _Base(QgsProcessingAlgorithm):
                 from qgis.PyQt.QtCore import QUrl
                 from qgis.PyQt.QtGui import QDesktopServices
                 QDesktopServices.openUrl(QUrl.fromLocalFile(rpt))
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
         return {}
 
 

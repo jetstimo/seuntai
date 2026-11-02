@@ -12,6 +12,7 @@ except ImportError:                     # Qt5 / QGIS 3
     from qgis.PyQt.QtWidgets import QAction
 
 from .provider import SeuntaiProvider
+from . import _log
 
 MENU = "&Seuntai"
 HERE = os.path.dirname(__file__)
@@ -58,23 +59,23 @@ class SeuntaiPlugin:
             try:
                 self.iface.messageBar().pushInfo(
                     "Seuntai", "Installed. Click the Seuntai toolbar icon, pick a line layer and the product, then Run.")
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
 
     def unload(self):
         if self.dlg is not None:
             try:
                 self.dlg.close()
                 self.dlg.deleteLater()
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
             self.dlg = None
         for act in self.actions:
             self.iface.removePluginVectorMenu(MENU, act)
             try:
                 self.iface.removeToolBarIcon(act)
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
         self.actions = []
         if self.provider:
             QgsApplication.processingRegistry().removeProvider(self.provider)
@@ -116,8 +117,8 @@ class SeuntaiPlugin:
             from .compat import GEOM_LINE
             if isinstance(lyr, QgsVectorLayer) and QgsWkbTypes.geometryType(lyr.wkbType()) == GEOM_LINE:
                 params["INPUT"] = lyr.id()
-        except Exception:
-            pass
+        except Exception as _e:
+            _log.note(_e)
         processing.execAlgorithmDialog(alg, params)
 
     def sample(self):
@@ -130,8 +131,8 @@ class SeuntaiPlugin:
                 self.iface.mapCanvas().setExtent(self.iface.mapCanvas().mapSettings().layerExtentToOutputExtent(
                     lyr, lyr.extent()))
                 self.iface.mapCanvas().refresh()
-            except Exception:
-                pass
+            except Exception as _e:
+                _log.note(_e)
 
     def about(self):
         from qgis.PyQt.QtWidgets import QMessageBox

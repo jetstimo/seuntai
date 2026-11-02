@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 – lulus pemeriksaan plugins.qgis.org
+- Kesalahan yang sengaja diabaikan (fitur QGIS opsional, berkas terkunci) kini dicatat ke panel Log Messages QGIS
+  (tab Seuntai) melalui `_log.py`, bukan diam-diam; pindaian keamanan Bandit lulus.
+- Enum Qt6 `QNetworkRequest.KnownHeaders`; izin berkas 644; gaya kode (flake8 E731).
+- Tidak ada perubahan aturan atau hasil (uji inti tetap identik).
+
 ## 2.0.0 – satu klik, satu jalan satu garis
 - Menu, form dan pesan berbahasa Inggris; laporan tetap berbahasa Indonesia. Jendela baru **Consolidate Lines**: pilih
   layer garis, centang nilai produk/LOB yang ada di data, tekan Run. Setiap alat cukup satu isian; pengaturan lain di
