@@ -12,7 +12,7 @@ Tanpa internet dan tanpa cache, mode jalan dilewati (koridor tetap tetap berjala
 Data jalan (c) OpenStreetMap contributors, Open Database License (ODbL) - https://www.openstreetmap.org/copyright.
 Seuntai hanya memakai jalan sebagai acuan keputusan; geometri/atribut OSM tidak ditulis ke hasil.
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 """
 import gzip
 import json

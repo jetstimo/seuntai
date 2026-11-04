@@ -9,7 +9,7 @@ filter atribut (produk/LOB), prioritas CREATEDATE tertua, Dissolve + Line Merge.
 skrip panduan dijelaskan di DASAR_KEPUTUSAN.md (kesamaan koridor diukur dengan jarak, bukan WKT identik;
 tanggal tak terbaca tidak lagi dianggap tertua; noding sebelum line merge; laporan dan jejak keputusan).
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 """
 import datetime as _dt
 import math
@@ -36,9 +36,20 @@ from . import deteksi as D
 from . import _log
 
 __product__ = "Seuntai"
-__version__ = "2.0.1"
+__version__ = "2.1.0"
 __author__ = "Joseph Edward Timothy Siahaan, Sidah Fahira"
 HERE = os.path.dirname(__file__)
+
+
+def integrity_status(en=False):
+    """Status keaslian rilis (keaslian.py): ASLI / DIMODIFIKASI / TIDAK RESMI / salinan pengembangan + sidik kunci.
+    Dicetak di laporan, ringkasan folder dan dialog About (LICENSE, pasal 7 butir 1c)."""
+    try:
+        from . import keaslian as _k
+        return _k.status(en)
+    except Exception as _e:
+        _log.note(_e)
+        return "not verified" if en else "tidak diverifikasi"
 
 # Label isian (Inggris) dan padanannya di laporan (Indonesia); urutan = nilai enum, tidak boleh diubah.
 MODES = ["Trim the parallel part and join the rest (recommended)",
@@ -1068,6 +1079,7 @@ class _Base(QgsProcessingAlgorithm):
                         "gap_report": res["params"]["gap_report"], "dayfirst": dayfirst, "qc_only": self.QC_ONLY,
                         "smart": smart, "f_id": f_id or "", "frag_min": frag_min, "drift": res["params"]["drift"],
                         "version": __version__, "author": __author__, "alg": self.displayName(),
+                        "integritas": integrity_status(),
                         "run": _dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "keluaran": KELUARAN_ID[per_unit] if not self.QC_ONLY else "-",
                         "road_mode": ROAD_MODES_ID[0] if road_info["mode"] in ("osm", "failed") else

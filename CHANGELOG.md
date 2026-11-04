@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.1.0 – lisensi GPL v3 + pasal 7, rilis bertanda tangan
+- Atas persetujuan kedua pencipta (Joseph Edward Timothy Siahaan dan Sidah Fahira), lisensi menjadi GPL-3.0-or-later
+  dengan syarat tambahan pasal 7: nama kedua pencipta wajib dipertahankan, versi modifikasi wajib berganti nama dan
+  ditandai, tidak boleh mengaku sebagai pembuat; merek Seuntai tidak dilisensikan. Versi s.d. 2.0.1 tetap GPL-2.0-or-later.
+- Rilis resmi ditandatangani digital (Ed25519, `RILIS.json`) dengan kunci rilis yang sama dengan Seranta (sidik
+  `92C4-D078-D1FC-1C5B`). Kaki laporan, ringkasan folder dan dialog About mencetak ASLI / DIMODIFIKASI / TIDAK RESMI beserta sidik kunci.
+- Pengaman berlapis: cek silang sidik kunci di metadata.txt, NOTICE.md dan README.md; About → *Verify online* mencocokkan
+  salinan dengan `RILIS_RESMI.json` di GitHub; pemeriksa independen `scripts/rilis_resmi.py`.
+- Tidak ada perubahan aturan atau hasil.
+
 ## 2.0.1 – lulus pemeriksaan plugins.qgis.org
 - Kesalahan yang sengaja diabaikan (fitur QGIS opsional, berkas terkunci) kini dicatat ke panel Log Messages QGIS
   (tab Seuntai) melalui `_log.py`, bukan diam-diam; pindaian keamanan Bandit lulus.

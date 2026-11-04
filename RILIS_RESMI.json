@@ -1,0 +1,31 @@
+{
+ "keterangan": "Daftar rilis resmi. Sidik manifest = SHA-256 RILIS.json/manifest kanonik; zip = SHA-256 berkas zip. Bilangan 32-bit big-endian.",
+ "kunci_sidik": "92C4-D078-D1FC-1C5B",
+ "pembuat": "Joseph Edward Timothy Siahaan",
+ "produk": "Seuntai - Strand Consolidator",
+ "rilis": {
+  "2.1.0": {
+   "manifest": [
+    1575691724,
+    1161080652,
+    877407927,
+    2685368419,
+    3144734757,
+    3842051007,
+    1718470337,
+    2229209908
+   ],
+   "tanggal": "2026-11-04T00:38:54+0000",
+   "zip": [
+    2322877205,
+    3968787481,
+    3178963815,
+    3870442704,
+    1065699670,
+    2534975745,
+    3755540339,
+    1447064055
+   ]
+  }
+ }
+}

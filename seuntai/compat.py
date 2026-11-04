@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Seuntai - kompatibilitas QGIS 3.22 LTR sampai QGIS 4.x (Qt5/Qt6): nama enum berubah antar versi.
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE)."""
-from qgis.core import (Qgis, QgsFeatureSink, QgsField, QgsProcessing, QgsProcessingParameterDefinition,
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE)."""
+from qgis.core import (Qgis, QgsFeatureRequest, QgsFeatureSink, QgsField, QgsProcessing, QgsProcessingParameterDefinition,
                        QgsProcessingParameterField, QgsProcessingParameterNumber, QgsUnitTypes, QgsVectorFileWriter,
                        QgsWkbTypes)
 
@@ -11,7 +11,7 @@ def _enum(*cands):
           "QgsProcessingParameterDefinition": QgsProcessingParameterDefinition,
           "QgsProcessingParameterField": QgsProcessingParameterField,
           "QgsProcessingParameterNumber": QgsProcessingParameterNumber, "QgsFeatureSink": QgsFeatureSink,
-          "QgsVectorFileWriter": QgsVectorFileWriter}
+          "QgsVectorFileWriter": QgsVectorFileWriter, "QgsFeatureRequest": QgsFeatureRequest}
     for c in cands:
         parts = c.split(".")
         obj = ns.get(parts[0])

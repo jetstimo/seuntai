@@ -31,12 +31,20 @@ contributors, ODbL 1.0; halaman Pages memuat atribusinya.
 ## Merilis versi baru (otomatis)
 1. Naikkan `version=` di `seuntai/metadata.txt` dan `__version__` di `seuntai/alg_strand.py`, tulis baris
    `changelog=` untuk versi itu, dan perbarui `CHANGELOG.md`.
-2. Commit, lalu buat tag yang sama dengan versi:
+2. Tanda tangani rilis (wajib sejak 2.1.0; hanya pemegang kunci rilis):
+   ```
+   python scripts/rilis_resmi.py rilis --plugin seuntai --kunci <kunci privat> --keluar dist --tulis-sumber --registri RILIS_RESMI.json
+   git add seuntai/RILIS.json RILIS_RESMI.json && git commit -m "Tanda tangan rilis <versi>"
+   ```
+   Sidik kunci resmi `92C4-D078-D1FC-1C5B` harus tertulis di metadata.txt, NOTICE.md dan README.md (cek silang).
+   Setelah RILIS.json di-commit, jangan mengubah berkas plugin lagi (status menjadi DIMODIFIKASI). Pemeriksa
+   independen: `python scripts/rilis_resmi.py cek <zip> [--online]`.
+3. Commit, lalu buat tag yang sama dengan versi:
    ```
    git tag v2.0.1
    git push origin main v2.0.1
    ```
-3. Workflow **Release** menguji, membuat `seuntai.2.0.1.zip`, melampirkannya ke GitHub Release, dan mengunggahnya ke
+4. Workflow **Release** menguji, membuat `seuntai.2.0.1.zip`, melampirkannya ke GitHub Release, dan mengunggahnya ke
    plugins.qgis.org. Pengguna QGIS melihat pembaruan di tab **Upgradeable** Plugin Manager.
 
 ## Secrets repositori (GitHub: Settings → Secrets and variables → Actions)

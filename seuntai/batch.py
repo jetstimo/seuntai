@@ -3,7 +3,7 @@
 Seuntai Otomatis - cari semua data kabel di folder (atau di seluruh folder pengguna / komputer), kenali kolomnya
 sendiri, lalu proses satu per satu dengan aturan yang sama. Satu data gagal tidak menghentikan data lain.
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 """
 import datetime as _dt
 import gc
@@ -24,7 +24,7 @@ from qgis.PyQt.QtGui import QIcon
 from . import compat as K
 from . import deteksi as D
 from . import ringkasan as RS
-from .alg_strand import __version__, __author__
+from .alg_strand import __version__, __author__, integrity_status
 from . import _log
 
 HERE = os.path.dirname(__file__)
@@ -391,7 +391,8 @@ class OtomatisSeuntai(QgsProcessingAlgorithm):
 
         # ---- 4. ringkasan
         meta = {"waktu": _dt.datetime.now().strftime("%Y-%m-%d %H:%M"), "lingkup": where_id,
-                "produk": ", ".join(wanted) if wanted else "semua", "versi": __version__, "pencipta": __author__,
+                "produk": ", ".join(wanted) if wanted else "semua", "versi": __version__,
+                "pencipta": "%s | integritas %s" % (__author__, integrity_status()),
                 "durasi": time.time() - t0, "list_only": list_only, "tol": tol}
         html_p = RS.build_html(os.path.join(outdir, "Ringkasan_Seuntai.html"), rows, meta)
         RS.build_csv(os.path.join(outdir, "Ringkasan_Seuntai.csv"), rows)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Seuntai - Processing provider
-# Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+# Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 import os
 
 from qgis.core import QgsProcessingProvider

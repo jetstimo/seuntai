@@ -5,7 +5,7 @@ lalu Run. Kolom produk dan kolom tanggal pembuatan dikenali otomatis; bila tidak
 ditampilkan dan garis terpanjang dipakai (hasil ditandai _TANPA_TANGGAL). Proses berjalan di latar (QgsTask) sehingga
 QGIS tetap bisa dipakai; hasil Shapefile kabel tunggal dimuat ke peta setelah selesai.
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 """
 import os
 import re

@@ -2,7 +2,7 @@
 """Seuntai - daftar sumber dan dasar setiap keputusan (dipakai laporan HTML dan DASAR_KEPUTUSAN.md).
 Status: STANDAR = mengikuti standar/aturan resmi; LITERATUR = metode dari publikasi ilmiah/dokumentasi rujukan;
 DESAIN = keputusan rekayasa yang diturunkan dari sumber dan diuji, dapat diubah pengguna.
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE)."""
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE)."""
 
 SUMBER = [
     ("S1", "Goodchild, M. F. & Hunter, G. J. (1997). A simple positional accuracy measure for linear features. "

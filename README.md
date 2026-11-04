@@ -7,7 +7,7 @@ more than once, so several lines run on top of or beside each other in one corri
 **line with the oldest creation date** is kept, unchanged and with all its original attributes, for the product/LOB
 you choose. The result is one non-stacked layer, saved as a Shapefile.
 
-Copyright © 2026 **Joseph Edward Timothy Siahaan** and **Sidah Fahira** · GNU GPL v2 or later · QGIS 3.22 LTR – 4.x
+Copyright © 2026 **Joseph Edward Timothy Siahaan** and **Sidah Fahira** · GNU GPL v3 or later with section 7 terms · QGIS 3.22 LTR – 4.x
 
 ## Install
 QGIS → **Plugins → Manage and Install Plugins → All** → search **Seuntai** → **Install**.
@@ -92,6 +92,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md): tests, release by git tag,
 automatic upload to the QGIS plugin repository, monthly road pack.
 
 ## License
-Code: GPL-2.0-or-later – see [LICENSE](LICENSE). Fonts Inter and IBM Plex Mono: SIL Open Font License 1.1
+Code: GPL-3.0-or-later with additional terms under section 7 (versions up to 2.0.1: GPL-2.0-or-later) – see
+[LICENSE](LICENSE) and [NOTICE.md](seuntai/NOTICE.md). You may use, share and modify Seuntai; copies and modified versions must
+keep both authors' names, must be marked as modified with a different name and logo, and must not claim authorship.
+Official releases are digitally signed (`RILIS.json`, Ed25519); reports and the About dialog print whether the copy is
+an ORIGINAL signed release or a MODIFIED / UNOFFICIAL copy. **Official release key fingerprint: `92C4-D078-D1FC-1C5B`** – a copy
+showing any other key is not an official Seuntai release. About → *Verify online* checks the installed copy against
+the official release list (`RILIS_RESMI.json`) in the GitHub repository. Fonts Inter and IBM Plex Mono: SIL Open Font License 1.1
 (`seuntai/assets/fonts/OFL.txt`).
 Leaflet 1.9.4: BSD-2-Clause (`seuntai/assets/map/LEAFLET_LICENSE.txt`).

@@ -3,7 +3,7 @@
 Seuntai - deteksi otomatis: kolom tanggal pembuatan, kolom produk/LOB, kolom identitas kabel, nilai produk, dan
 aturan berkas mana yang layak diproses. Murni Python (tanpa QGIS) agar bisa diuji.
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 """
 import os
 import re
