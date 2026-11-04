@@ -13,6 +13,8 @@ jobs:
           python-version: "3.12"
       - name: Unit tests (pure Python, no QGIS needed)
         run: python seuntai/tests/test_core.py
+      - name: Release authenticity tests
+        run: python seuntai/tests/test_keaslian.py
       - name: Security scan (Bandit)
         run: |
           pip install bandit

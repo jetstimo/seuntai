@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Seuntai - Strand Consolidator - menu, toolbar, and Processing registration
-# Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+# Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 import os
 
 from qgis.core import QgsApplication, QgsSettings, QgsVectorLayer, QgsProject
@@ -136,11 +136,46 @@ class SeuntaiPlugin:
 
     def about(self):
         from qgis.PyQt.QtWidgets import QMessageBox
-        from .alg_strand import __version__, __author__
-        QMessageBox.about(
-            self.iface.mainWindow(), "Seuntai",
-            "<b>Seuntai - Strand Consolidator</b> v%s<br>Authors: %s<br><br>"
+        from .alg_strand import __version__, __author__, integrity_status
+        box = QMessageBox(self.iface.mainWindow())
+        box.setWindowTitle("Seuntai")
+        box.setText(
+            "<b>Seuntai&trade; - Strand Consolidator</b> v%s<br>Authors: %s<br>File integrity: %s<br><br>"
             "Turns stacked or parallel lines in one corridor into a single line: the line with the oldest creation "
             "date is kept, with its original attributes, for the product/LOB you choose. Reports are in Indonesian."
-            "<br><br>License: GNU GPL v2 or later. Fonts Inter and IBM Plex Mono: SIL OFL 1.1. Leaflet: BSD-2-Clause."
-            % (__version__, __author__))
+            "<br><br>License: GNU GPL v3 or later with the section 7 terms in LICENSE: copies and modifications must "
+            "keep both authors' names, modified versions must be renamed and marked as modified and may not claim "
+            "authorship. Official releases are digitally signed; the official release key fingerprint is "
+            "<b>92C4-D078-D1FC-1C5B</b> (also published on plugins.qgis.org and github.com/jetstimo/seuntai). "
+            "Seuntai&trade; is a trademark of Joseph Edward Timothy Siahaan and Sidah Fahira. "
+            "Fonts Inter and IBM Plex Mono: SIL OFL 1.1. Leaflet: BSD-2-Clause."
+            % (__version__, __author__, integrity_status(en=True)))
+        role = getattr(getattr(QMessageBox, "ButtonRole", QMessageBox), "ActionRole")
+        ok = getattr(getattr(QMessageBox, "StandardButton", QMessageBox), "Ok")
+        ver_b = box.addButton("Verify online", role)
+        box.addButton(ok)
+        (box.exec if hasattr(box, "exec") else box.exec_)()
+        if box.clickedButton() is ver_b:
+            self._verify_online()
+
+    def _verify_online(self):
+        """Cocokkan salinan terpasang dengan RILIS_RESMI.json di GitHub pembuat (lewat proxy QGIS)."""
+        from qgis.PyQt.QtWidgets import QMessageBox
+        from . import keaslian
+
+        def fetch(url):
+            from qgis.core import QgsBlockingNetworkRequest
+            from qgis.PyQt.QtCore import QUrl
+            from qgis.PyQt.QtNetwork import QNetworkRequest
+            req = QgsBlockingNetworkRequest()
+            err = req.get(QNetworkRequest(QUrl(url)), True)
+            if err != getattr(QgsBlockingNetworkRequest, "NoError", 0):
+                raise IOError(req.errorMessage())
+            return bytes(req.reply().content())
+        try:
+            code, text = keaslian.verify_online(fetch)
+        except Exception as e:      # verifikasi tidak boleh membuat QGIS galat
+            code, text = "GAGAL", str(e)[:120]
+        title = "Official release verified" if code == "TERVERIFIKASI" else "Not verified"
+        (QMessageBox.information if code == "TERVERIFIKASI" else QMessageBox.warning)(
+            self.iface.mainWindow(), "Seuntai - " + title, text)

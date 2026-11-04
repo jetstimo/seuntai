@@ -16,7 +16,7 @@ Alur:
      persilangan), lalu digabung (line merge) menjadi untai: satu fitur per komponen tersambung.
   4. Celah antar-untai diukur; celah <= toleransi sambung bisa dijembatani otomatis.
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 """
 import datetime as _dt
 import math

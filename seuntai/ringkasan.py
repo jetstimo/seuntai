@@ -3,7 +3,7 @@
 Seuntai - ringkasan pemrosesan banyak data (HTML satu berkas, CSV untuk Excel, dan BACA_SAYA.txt).
 Murni Python agar bisa diuji tanpa QGIS.
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 """
 import csv
 import html

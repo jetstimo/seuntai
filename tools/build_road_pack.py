@@ -10,7 +10,7 @@ Contoh (Python QGIS / OSGeo4W, atau CI dengan python3-gdal):
     python build_road_pack.py out_folder java_roads.gpkg sumatra_roads.gpkg ...
 
 Data (c) OpenStreetMap contributors, ODbL 1.0. Paket ini adalah basis data turunan dan wajib dibagikan dengan lisensi
-ODbL beserta atribusi. Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later.
+ODbL beserta atribusi. Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later.
 """
 import datetime
 import json

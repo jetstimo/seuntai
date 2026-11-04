@@ -11,7 +11,7 @@ istilah (penjelasan muncul saat istilah disentuh), tur singkat, parameter, serta
 build() = collect() (data dari hasil proses) + render() (HTML murni dari data JSON), sehingga tampilan dapat
 diuji tanpa QGIS.
 
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE).
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE).
 Leaflet 1.9.4 (BSD-2-Clause, assets/map/LEAFLET_LICENSE.txt); Inter dan IBM Plex Mono (SIL OFL 1.1).
 """
 import base64
@@ -562,6 +562,7 @@ def render(path, p):
         untai_sec="" if qc else STRAND_SECTION.format(t_untai=T("untai", "untai"), t_fragmen=T("fragmen", "fragmen")),
         profile=_profile_html(stats, meta), faq=faq, gloss=gloss,
         params=_params_html(p, meta, stats), kep=kep, src=src, version=E(meta["version"]), author=E(meta["author"]),
+        integ=E(meta.get("integritas", "-")),
         data=json.dumps(js_data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"),
         leaflet_js=leaflet_js, js=JS,
         attrib=(" Data jalan &copy; <a href='https://www.openstreetmap.org/copyright' rel='noopener'>OpenStreetMap "
@@ -739,8 +740,8 @@ TEMPLATE = """<!doctype html>
   <div class="exbtns"><button class="btn" type="button" id="tskip">Tutup</button>
   <button class="btn primary" type="button" id="tnext">Lanjut</button></div></div></div>
 
-<footer>Seuntai&trade; {version} &copy; 2026 {author}. GNU GPL v2 atau lebih baru. Hasil alat membantu, bukan
-menggantikan, penilaian perancang dan pemeriksa.{attrib}</footer>
+<footer>Seuntai&trade; {version} &copy; 2026 {author}. GNU GPL v3 atau lebih baru dengan syarat tambahan pasal 7.
+Integritas: {integ}. Hasil alat membantu, bukan menggantikan, penilaian perancang dan pemeriksa.{attrib}</footer>
 <script>{leaflet_js}</script>
 <script>window.SEUNTAI={data};</script>
 <script>{js}</script>

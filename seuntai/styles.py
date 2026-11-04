@@ -2,7 +2,7 @@
 """Seuntai - gaya otomatis untuk layer keluaran.
 Warna status memakai palet Okabe-Ito (Color Universal Design) agar tetap terbedakan oleh pengguna buta warna;
 status juga dibedakan dengan pola garis (utuh/putus-putus/titik), bukan warna saja.
-Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-2.0-or-later (see LICENSE)."""
+Copyright (C) 2026 Joseph Edward Timothy Siahaan and Sidah Fahira. GPL-3.0-or-later with section 7 terms (see LICENSE)."""
 from . import _log
 try:
     from qgis.core import (QgsCategorizedSymbolRenderer, QgsLineSymbol, QgsMarkerSymbol,
