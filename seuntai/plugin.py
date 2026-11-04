@@ -52,6 +52,9 @@ class SeuntaiPlugin:
                   "Report duplicates, partly parallel lines, gaps and junctions without changing the data",
                   lambda checked=False: self.run("seuntai:periksa_koridor_ganda"))
         self._add("Load Sample Data", "Add a small sample layer of stacked lines to try Seuntai", self.sample)
+        self._add("Base Map...", "Background for checking results: satellite imagery (sharp, native zoom detected "
+                  "automatically), street map or none. One layer shared with Seranta; only tiles on screen are "
+                  "downloaded and cached", self.base_map)
         self._add("About Seuntai", "Version, authors and license", self.about)
         st = QgsSettings()
         if st.value("seuntai/welcomed2", "") != "1":
@@ -133,6 +136,20 @@ class SeuntaiPlugin:
                 self.iface.mapCanvas().refresh()
             except Exception as _e:
                 _log.note(_e)
+
+    def base_map(self):
+        from qgis.PyQt.QtWidgets import QInputDialog
+        from . import basemap
+        keys = list(basemap.CHOICES)
+        cur = keys.index(basemap.choice())
+        item, ok = QInputDialog.getItem(self.iface.mainWindow(), "Seuntai - Base map", "Background map:",
+                                        [basemap.LABELS[k] for k in keys], cur, False)
+        if not ok:
+            return
+        kind = keys[[basemap.LABELS[k] for k in keys].index(item)]
+        basemap.set_choice(kind)
+        ms = self.iface.mapCanvas().mapSettings()
+        basemap.ensure(kind, ms.extent(), ms.destinationCrs())
 
     def about(self):
         from qgis.PyQt.QtWidgets import QMessageBox

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.2.0 – peta dasar citra satelit yang tajam dan cepat
+- Saat hasil Seuntai dimuat, satu layer citra satelit Esri World Imagery dipasang di dasar daftar layer (dipakai bersama
+  Seranta, tidak pernah dobel). Pilihan Satelit / Peta jalan / Tanpa: Vector → Seuntai → **Base Map...**
+- Tajam & tanpa tulisan "Map data not yet available": zoom asli citra ditanyakan ke layanan `tilemap` Esri sekali per
+  wilayah (di latar belakang, QGIS tidak menunggu); di atas zoom asli ubin diperbesar dengan interpolasi kubik.
+- Cepat: hanya ubin yang tampil yang diunduh; cache jaringan QGIS minimal 1 GB.
+- Laporan HTML: pilihan peta dasar (citra satelit bawaan bila online, peta jalan, tanpa) dengan deteksi zoom asli yang sama.
+- Tidak ada perubahan aturan atau hasil.
+
 ## 2.1.0 – lisensi GPL v3 + pasal 7, rilis bertanda tangan
 - Atas persetujuan kedua pencipta (Joseph Edward Timothy Siahaan dan Sidah Fahira), lisensi menjadi GPL-3.0-or-later
   dengan syarat tambahan pasal 7: nama kedua pencipta wajib dipertahankan, versi modifikasi wajib berganti nama dan

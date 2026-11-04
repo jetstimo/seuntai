@@ -122,6 +122,25 @@ def _to_top_later(layer_id, delay=300):
         _log.note(_e)
 
 
+def _basemap_later(layer_id, delay=500):
+    """Peta dasar satelit (satu layer bersama, zoom asli dideteksi) setelah hasil Seuntai dimuat; tidak memblokir."""
+    try:
+        from qgis.PyQt.QtCore import QTimer
+
+        def go():
+            try:
+                from qgis.core import QgsProject
+                from . import basemap
+                lyr = QgsProject.instance().mapLayer(layer_id)
+                if lyr is not None:
+                    basemap.ensure(None, lyr.extent(), lyr.crs())
+            except Exception as _e:
+                _log.note(_e)
+        QTimer.singleShot(delay, go)
+    except Exception as _e:
+        _log.note(_e)
+
+
 class PostProcessor(QgsProcessingLayerPostProcessorInterface):
     def __init__(self, kind):
         super().__init__()
@@ -143,6 +162,7 @@ class PostProcessor(QgsProcessingLayerPostProcessorInterface):
                 layer.setRenderer(note_renderer())
                 _to_top_later(layer.id(), 450)      # titik catatan di atas untai
             layer.triggerRepaint()
+            _basemap_later(layer.id())
         except Exception as e:  # gaya hanya kosmetik
             try:
                 feedback.pushInfo("Layer style not applied: %r" % e)

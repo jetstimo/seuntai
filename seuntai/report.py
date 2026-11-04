@@ -636,7 +636,8 @@ TEMPLATE = """<!doctype html>
       <label><input type="checkbox" data-l="NC"> Celah</label>
       <label><input type="checkbox" data-l="NJ"> Jembatan</label>
       <label><input type="checkbox" data-l="NB"> Cabang &amp; ujung</label>
-      <label><input type="checkbox" id="osm"> Peta jalan (online)</label>
+      <label>Peta dasar <select id="mbase" aria-label="Peta dasar"><option value="sat">Citra satelit</option>
+        <option value="osm">Peta jalan</option><option value="none">Tanpa (offline)</option></select></label>
       <button type="button" id="fsbtn" class="mbtn" aria-label="Layar penuh">&#x26F6;</button>
     </div>
     <div class="cmpui" id="cmpui" hidden><span class="cl">Sebelum</span><span class="cr">Sesudah</span>
@@ -1039,11 +1040,29 @@ if(window.L){
   map.on("zoomend",rs);
   var b=L.featureGroup(all).getBounds();if(b.isValid())map.fitBounds(b,{padding:[24,24]});else map.setView([-2,118],5);
   rs();L.control.scale({imperial:false}).addTo(map);
-  var osm=null;
-  $("osm").addEventListener("change",function(e){
-    if(e.target.checked){osm=osm||L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,
-      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'});osm.addTo(map);osm.bringToBack();}
-    else if(osm){map.removeLayer(osm)}});
+  // peta dasar: citra satelit Esri (bawaan bila online) / peta jalan / tanpa. Zoom asli citra ditanyakan ke layanan
+  // tilemap Esri sekali per wilayah; di atasnya ubin diperbesar (tanpa gambar "Map data not yet available").
+  var BL={sat:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {maxZoom:22,maxNativeZoom:17,keepBuffer:4,updateWhenZooming:false,crossOrigin:true,
+       attribution:"Citra &copy; Esri, Maxar, Earthstar Geographics"}),
+    osm:L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:22,maxNativeZoom:19,keepBuffer:4,
+      updateWhenZooming:false,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'})},
+    curB=null,zC={};
+  function probeZ(){if(curB!==BL.sat)return;var c;try{c=map.getCenter()}catch(e){return}
+    function txy(z){var n=Math.pow(2,z),la=Math.max(-85,Math.min(85,c.lat))*Math.PI/180;
+      return [Math.floor((c.lng+180)/360*n),Math.floor((1-Math.log(Math.tan(la)+1/Math.cos(la))/Math.PI)/2*n)]}
+    var k8=txy(8).join("_");function apply(z){zC[k8]=z;if(BL.sat.options.maxNativeZoom!==z){BL.sat.options.maxNativeZoom=z;BL.sat.redraw()}}
+    if(zC[k8]){apply(zC[k8]);return}
+    function ask(z){var t=txy(z);if(!window.fetch){apply(17);return}
+      fetch("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tilemap/"+z+"/"+Math.max(t[1]-1,0)+"/"+Math.max(t[0]-1,0)+"/3/3")
+      .then(function(r){return r.json()}).then(function(d){var n=(d.data||[]).filter(function(v){return v}).length;
+        if(n>=5)apply(z);else if(z>18)ask(z-1);else apply(17)}).catch(function(){apply(17)})}
+    ask(19)}
+  function setB(k){if(curB)map.removeLayer(curB);curB=BL[k]||null;if(curB){curB.addTo(map);curB.bringToBack();probeZ()}
+    try{localStorage.setItem("seuntai-map-base",k)}catch(e){}}
+  var b0=(navigator.onLine===false)?"none":"sat";try{b0=localStorage.getItem("seuntai-map-base")||b0}catch(e){}
+  $("mbase").value=b0;setB(b0);$("mbase").addEventListener("change",function(e){setB(e.target.value)});
+  map.on("moveend",probeZ);
   Array.prototype.forEach.call(document.querySelectorAll(".maptools input[data-l]"),function(cb){
     cb.addEventListener("change",function(){var g=groups[cb.getAttribute("data-l")];if(cb.checked)g.addTo(map);else map.removeLayer(g)})});
   // tampilan
