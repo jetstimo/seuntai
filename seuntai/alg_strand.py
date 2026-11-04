@@ -36,7 +36,7 @@ from . import deteksi as D
 from . import _log
 
 __product__ = "Seuntai"
-__version__ = "2.1.0"
+__version__ = "2.2.0"
 __author__ = "Joseph Edward Timothy Siahaan, Sidah Fahira"
 HERE = os.path.dirname(__file__)
 
