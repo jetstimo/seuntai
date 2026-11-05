@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.1 – rilis stabil (bukan experimental lagi)
+
+- `experimental=False`: Seuntai tampil di Plugin Manager QGIS tanpa harus mencentang "Show also experimental plugins".
+- Tidak ada perubahan algoritma maupun hasil; rilis tetap ditandatangani kunci resmi 92C4-D078-D1FC-1C5B.
+
 ## 2.2.0 – peta dasar citra satelit yang tajam dan cepat
 - Saat hasil Seuntai dimuat, satu layer citra satelit Esri World Imagery dipasang di dasar daftar layer (dipakai bersama
   Seranta, tidak pernah dobel). Pilihan Satelit / Peta jalan / Tanpa: Vector → Seuntai → **Base Map...**
