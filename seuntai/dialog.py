@@ -247,7 +247,7 @@ class ConsolidateDialog(QDialog):
             for nm in names:
                 smp[nm].append(ft[nm])
         self.f_date, _why = D.pick_date_field([(f.name(), f.typeName()) for f in fields], smp)
-        self.f_prod = D.pick_product_field(names)
+        self.f_prod = D.pick_product_field(names, smp)
         counts = {}
         if self.f_prod:
             idx = fields.indexOf(self.f_prod)

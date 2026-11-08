@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.3.0 – pengenalan kolom yang lebih pintar
+
+- Kolom tanggal pembuatan dan kolom produk/LOB dikenali walau namanya salah ketik satu huruf (CRETEDATE, PRODCUT) atau
+  ditulis lain (CREATE_DT, TGL_DIBUAT, LOB_TYPE); isi kolom tanggal tetap harus >= 80 % terbaca tanggal.
+- Bila nama kolom produk tidak dikenal sama sekali, dipakai kolom teks yang isinya memuat nilai produk yang dicari (mis.
+  FTTT) - dari ISI, bukan nama.
+- Nilai produk dicocokkan tanpa peduli huruf besar/kecil, spasi dan tanda baca (fttt, FTT-T = FTTT).
+- Kolom tanggal ubah/hapus tetap tidak pernah dipakai. Layer dengan nama kolom biasa dan nilai produk yang ditulis seragam: hasil tidak berubah.
+
 ## 2.2.1 – rilis stabil (bukan experimental lagi)
 
 - `experimental=False`: Seuntai tampil di Plugin Manager QGIS tanpa harus mencentang "Show also experimental plugins".
