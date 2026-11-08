@@ -36,7 +36,7 @@ from . import deteksi as D
 from . import _log
 
 __product__ = "Seuntai"
-__version__ = "2.2.1"
+__version__ = "2.3.0"
 __author__ = "Joseph Edward Timothy Siahaan, Sidah Fahira"
 HERE = os.path.dirname(__file__)
 
@@ -560,7 +560,7 @@ class _Base(QgsProcessingAlgorithm):
             ectx = self.createExpressionContext(parameters, context, src)
             req.setFilterExpression(expr_s)
             req.setExpressionContext(ectx)
-        want = set(v.upper() for v in values)
+        want = set(D.norm_value(v) for v in values)     # 2.3.0: 'fttt', 'FTT-T' = FTTT
         total = src.featureCount() if src.featureCount() >= 0 else 0
         records, feats, ident, pending = [], {}, {}, []
         n_read = n_out_prod = n_out_expr = n_bad_date = n_nogeom = 0
@@ -573,7 +573,7 @@ class _Base(QgsProcessingAlgorithm):
                 pv = f[f_prod_filter]
                 pvs = "" if pv is None or str(pv).upper() == "NULL" else str(pv).strip()
                 prod_seen[pvs] = prod_seen.get(pvs, 0) + 1
-                if pvs.upper() not in want:
+                if D.norm_value(pvs) not in want:
                     n_out_prod += 1
                     continue
             g = f.geometry()

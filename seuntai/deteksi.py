@@ -46,6 +46,44 @@ def _by_name(names, wanted):
     return None
 
 
+def lev(a, b, cap=3):
+    """Jarak edit Damerau-Levenshtein terbatas (tukar dua huruf bersebelahan = 1)."""
+    if a == b:
+        return 0
+    if abs(len(a) - len(b)) >= cap:
+        return cap
+    d = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
+    for i in range(len(a) + 1):
+        d[i][0] = i
+    for j in range(len(b) + 1):
+        d[0][j] = j
+    for i in range(1, len(a) + 1):
+        for j in range(1, len(b) + 1):
+            c = 0 if a[i - 1] == b[j - 1] else 1
+            d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + c)
+            if i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
+                d[i][j] = min(d[i][j], d[i - 2][j - 2] + 1)
+    return min(d[-1][-1], cap)
+
+
+def _by_typo(names, wanted, min_len=6):
+    """2.3.0: nama kolom salah ketik satu huruf (CRETEDATE, PRODCUT, CREATEDDATE) -> kolom yang dimaksud.
+    Hanya nama >= min_len huruf (nama pendek seperti LOB/TGL terlalu mudah tertukar) dan hanya bila tepat satu kolom."""
+    hits = []
+    for n in names:
+        nn = norm(n)
+        if len(nn) < min_len:
+            continue
+        if any(len(w) >= min_len and lev(nn, w, 2) <= 1 for w in wanted):
+            hits.append(n)
+    return hits[0] if len(hits) == 1 else None
+
+
+def norm_value(v):
+    """Nilai produk/LOB dinormalkan: huruf besar tanpa spasi/tanda baca ('fttt ', 'FTT-T', 'F.T.T.T' -> FTTT)."""
+    return re.sub(r"[\s_\-\.]+", "", str(v or "")).upper()
+
+
 def date_ratio(values, dayfirst=True):
     """Bagian nilai tidak kosong yang terbaca sebagai tanggal (0..1) dan jumlah nilai tidak kosong."""
     vals = [v for v in values if v not in (None, "") and str(v).upper() not in ("NULL", "NONE")]
@@ -70,6 +108,20 @@ def pick_date_field(fields, samples, dayfirst=True):
         r, k = date_ratio(samples.get(n, []), dayfirst)
         if k == 0 or r >= 0.8:
             return n, "nama kolom dikenal (%s)" % n
+    # 2.3.0: nama kolom salah ketik (CRETEDATE) atau gabungan kata buat+tanggal (CREATE_DT, TGL_DIBUAT, INSTALL_TGL)
+    typo = _by_typo([n for n in names if not any(b in norm(n) for b in NOT_CREATE)], DATE_NAMES)
+    if typo:
+        r, k = date_ratio(samples.get(typo, []), dayfirst)
+        if k == 0 or r >= 0.8:
+            return typo, "nama kolom mirip %s (salah ketik), isi terbaca tanggal" % typo
+    for n in names:
+        nn = norm(n)
+        if any(b in nn for b in NOT_CREATE):
+            continue
+        if re.search(r"CREAT|DIBUAT|BUAT|INSTAL|BANGUN|BUILT|BUILD", nn) and re.search(r"DATE|DT|TGL|TANGGAL|TIME|WAKTU", nn):
+            r, k = date_ratio(samples.get(n, []), dayfirst)
+            if k > 0 and r >= 0.8:
+                return n, "nama kolom memuat kata buat + tanggal (%s), isi terbaca tanggal" % n
     cands = []
     for n, typ in fields:
         if any(b in norm(n) for b in NOT_CREATE):
@@ -93,8 +145,30 @@ def _numeric_only(values):
                               for v in vals)
 
 
-def pick_product_field(names):
-    return _by_name(names, PRODUCT_NAMES)
+def pick_product_field(names, samples=None, wanted=None):
+    """Kolom produk/LOB: nama dikenal -> nama salah ketik -> nama memuat PRODUCT/PRODUK/LOB -> (2.3.0) ISI kolom: bila
+    nilai yang dicari (mis. FTTT) diketahui, kolom teks yang paling banyak memuat nilai itu."""
+    hit = _by_name(names, PRODUCT_NAMES) or _by_typo(names, PRODUCT_NAMES)
+    if hit:
+        return hit
+    part = [n for n in names if re.search(r"PRODU|(^|[^A-Z])LOB([^A-Z]|$)", norm(n).replace("LOB", " LOB ")) and
+            not any(b in norm(n) for b in ("ID", "CODE", "KODE")) or norm(n).endswith("LOB")]
+    if len(part) == 1:
+        return part[0]
+    if samples and wanted:
+        want = {norm_value(w) for w in wanted if norm_value(w)}
+        best = None
+        for n in names:
+            vals = [v for v in samples.get(n, []) if v not in (None, "") and str(v).upper() != "NULL"]
+            if not vals or all(isinstance(v, (int, float)) for v in vals):
+                continue
+            k = sum(1 for v in vals if norm_value(v) in want)
+            card = len({norm_value(v) for v in vals})
+            if k and card <= max(20, len(vals) // 5) and (best is None or k > best[0]):
+                best = (k, n)
+        if best:
+            return best[1]
+    return None
 
 
 def pick_ident_field(names):
@@ -108,11 +182,11 @@ def choose_values(counts, wanted):
         return None, "semua garis (tanpa filter produk)", True
     up = {}
     for v, n in counts.items():
-        key = str(v).strip().upper()
+        key = norm_value(v)
         up[key] = up.get(key, 0) + n
-    hit = [w for w in wanted if w.strip().upper() in up]
+    hit = [w for w in wanted if norm_value(w) in up]
     if hit:
-        n = sum(up[w.strip().upper()] for w in hit)
+        n = sum(up[norm_value(w)] for w in hit)
         return hit, "produk %s (%d garis)" % (", ".join(hit), n), True
     top = sorted(up.items(), key=lambda kv: -kv[1])[:6]
     isi = ", ".join("%s %d" % (k or "<kosong>", n) for k, n in top) or "-"

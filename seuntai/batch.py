@@ -106,7 +106,7 @@ def inspect(uri, label, wanted, skip_nodate=False):
         if not f_tgl and skip_nodate:
             return skip("tidak ada kolom tanggal pembuatan (kolom: %s)" % ", ".join(names[:12]),
                         "no creation-date column (columns: %s)" % ", ".join(names[:12]))
-        f_prod = D.pick_product_field(names)
+        f_prod = D.pick_product_field(names, smp, wanted)
         info["kolom_produk"] = f_prod or ""
         if wanted:
             if not f_prod:
